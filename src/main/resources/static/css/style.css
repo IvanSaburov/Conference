@@ -1,0 +1,8 @@
+
+.buttons-group{
+    display: flex;
+    margin: 10px 0px 0px 10px;
+}
+.mainbutton{
+    margin-left: 10px;
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Studentlist</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+    <link type="text/css" rel="stylesheet" th:href="@{css/style.css}" />
+
+</head>
+<body>
+<div class="buttons-group">
+    <div >
+    <a href="/presentations" class="btn btn-success">Главная страница</a>
+        </div>
+    <!--<a class="btn btn-success" th:case="*" href="/presentations">Главная страница</a>-->
+    <div class="mainbutton"  th:switch="${usersAccess}">
+        <a class="btn btn-success" th:case="true" href="/users">Список пользователей</a>
+        <a class="btn btn-success" th:case="*" href="#">Список пользователей</a>
+    </div>
+    <!--<a href="/users" class="btn btn-success">Список пользователей</a>-->
+    <div class="mainbutton">
+    <a href="#" class="btn btn-success">Доклады</a>
+    </div>
+</div>
+<div class="col-md-4">
+    <!--<h3 th:inline="text">Добро пожаловать [[${#httpServletRequest.remoteUser}]]</h3>-->
+    <h3 th:inline="text">Список презентаций: </h3>
+</div>
+<!--<div class="col-md-4" style="padding:20px 0">-->
+    <!--<form th:action="@{/logout}" method="post">-->
+        <!--<input type="submit" value="Sign Out" class="btn btn-danger"/>-->
+    <!--</form>-->
+<!--</div>-->
+
+<div style="padding:0 20px">
+    <table class="table table-striped">
+        <tr>
+            <th>Аудитория</th>
+            <th>Дата и время</th>
+            <th>Название</th>
+            <th>Описание</th>
+            <th>Докладчик</th>
+        </tr>
+        <tr th:each = "schedule : ${schedules}">
+            <td th:text="${schedule.presentationRoom.number}"></td>
+            <td th:text="${schedule.presentationTime}"></td>
+            <td th:text="${schedule.presentation.tittle}"></td>
+            <td th:text="${schedule.presentation.description}"></td>
+            <td>
+				<span th:each="conferenceUser,iterStat : ${schedule.presentation.conferenceUsers}">
+					<span th:text="${conferenceUser.firstName} + ' ' + ${conferenceUser.lastName}"/><th:block th:if="${!iterStat.last}">,</th:block>
+				</span>
+            </td>
+            <!--<td>-->
+                <!--<a th:href="@{/addStudentCourse/{id}(id=${user.id})}" class="btn btn-success btn-xs">Add Course</a>-->
+                <!--<a th:href="@{/delete/{id}(id=${user.id})}" class="btn btn-danger btn-xs">Delete</a>-->
+            <!--</td>-->
+        </tr>
+    </table>
+</div>
+</body>
+</html>
