@@ -10,31 +10,27 @@
 <body>
 <th:block layout:replace="fragments/navigation"/>
 <div class="col-md-4">
-    <h3 th:inline="text">Мои презентации: </h3>
+    <h3 th:inline="text">Список презентаций: </h3>
 </div>
 
 <div style="padding:0 20px">
     <table class="table table-striped">
         <tr>
+            <th>Аудитория</th>
+            <th>Дата и время</th>
             <th>Название</th>
             <th>Описание</th>
-            <th>Дата и время</th>
             <th>Докладчик</th>
-            <th>Действия</th>
         </tr>
-        <tr th:each = "presentation : ${presentations}">
-            <!--<td th:text="${schedule.presentationTime}"></td>-->
-            <td th:text="${presentation.tittle}"></td>
-            <td th:text="${presentation.description}"></td>
-            <td th:text="${presentation.description}"></td>
+        <tr th:each = "schedule : ${schedules}">
+            <td th:text="${schedule.presentationRoom.number}"></td>
+            <td th:text="${schedule.presentationTime}"></td>
+            <td th:text="${schedule.presentation.tittle}"></td>
+            <td th:text="${schedule.presentation.description}"></td>
             <td>
-				<span th:each="conferenceUser,iterStat : ${presentation.conferenceUsers}">
+				<span th:each="conferenceUser,iterStat : ${schedule.presentation.conferenceUsers}">
 					<span th:text="${conferenceUser.firstName} + ' ' + ${conferenceUser.lastName}"/><th:block th:if="${!iterStat.last}">,</th:block>
 				</span>
-            </td>
-            <td>
-            <a th:href="@{/editPresentation/{id}(id=${presentation.presentationid})}" class="btn btn-success btn-xs">Редактировать</a>
-            <a th:href="@{/delete/{id}(id=${presentation.presentationid})}" class="btn btn-danger btn-xs">Удалить</a>
             </td>
         </tr>
     </table>

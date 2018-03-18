@@ -1,29 +1,32 @@
 package org.saburov.services.conference.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 public class Schedule {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
     private long id;
-    @Column(name="presentationTime")
-    private Date presentationTime;
-//    @JoinColumn(name = "presentationid")
-@OneToOne
-@JoinColumn(name="presentation")
+
+    @Column(name = "presentationTime")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    private java.util.Date presentationTime;
+    @OneToOne
+    @JoinColumn(name = "presentationid")
     private Presentation presentation;
 
     @OneToOne
     @OrderBy
-    @JoinColumn(name="presentation_room")
+    @JoinColumn(name = "presentation_room")
+    @JsonIgnore
     private Room presentationRoom;
-//    @Column(name="presentation")
-//    private long presentation;
-//    @Column(name="presentationRoom")
-//    private long presentationRoom;
+
     public long getId() {
         return id;
     }

@@ -1,42 +1,37 @@
 package org.saburov.services.conference.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
 public class Presentation {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private long presentatiionid;
-    @Column(name="tittle")
+    @Column
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long presentationid;
+
+    @Column(name = "tittle")
     private String tittle;
-    @Column(name="description")
+
+    @Column(name = "description")
     private String description;
 
-//    @OneToOne(mappedBy = "presentationOb", cascade = CascadeType.ALL)
-//    @OneToOne(optional = false, mappedBy="presentationOb")
-//    private Schedule schedule;
-
     @ManyToMany(mappedBy = "presentations")
+    @JsonProperty("presenters")
     private Set<ConferenceUser> conferenceUsers;
+
     public Presentation() {
     }
 
-//    public Schedule getSchedule() {
-//        return schedule;
-//    }
-//
-//    public void setSchedule(Schedule schedule) {
-//        this.schedule = schedule;
-//    }
-
-    public long getPresentatiionid() {
-        return presentatiionid;
+    public long getPresentationid() {
+        return presentationid;
     }
 
-    public void setPresentatiionid(long presentatiionid) {
-        this.presentatiionid = presentatiionid;
+    public void setPresentationid(long presentationid) {
+        this.presentationid = presentationid;
     }
 
     public String getTittle() {

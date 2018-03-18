@@ -16,10 +16,12 @@ public class RolesConfig {
     public void setListenerRole(String listenerRole) {
         RolesConfig.listenerRole = listenerRole;
     }
+
     @Value("${roles.presenter}")
     public void setPresenterRole(String presenterRole) {
         RolesConfig.presenterRole = presenterRole;
     }
+
     @Value("${roles.admin}")
     public void setAdminRole(String adminRole) {
         RolesConfig.adminRole = adminRole;

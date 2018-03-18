@@ -13,21 +13,25 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        String admin = "ADMIN";
+        String presenter = "PRESENTER";
+        String listener = "LISTENER";
         http
-                .authorizeRequests().antMatchers("/css/**").permitAll() // Enable css when logged out
+                .authorizeRequests()
+                .antMatchers("/css/**").permitAll()
                 .and()
                 .authorizeRequests()
-//                .antMatchers("/", "add", "delete/{id}", "save", "students", "/addStudentCourse/**").hasAnyRole("ROLE_TEST")
-                .antMatchers("/students").hasAnyRole("TEST")
-                .antMatchers("/addStudentCourse/**").hasAnyRole("TEST1")
                 .antMatchers("/registration").permitAll()
-                .antMatchers("/presentations").permitAll()
+                .antMatchers("/presentations").hasAnyRole(presenter, admin)
+                .antMatchers("/schedule").hasAnyRole(presenter, admin, listener)
+                .antMatchers("/users").hasAnyRole(admin)
                 .antMatchers("/addUser").permitAll()
+                .antMatchers("/apischedule").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")
-                .defaultSuccessUrl("/presentations")
+                .defaultSuccessUrl("/schedule")
                 .permitAll()
                 .and()
                 .logout()
@@ -37,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .and()
-                .exceptionHandling().accessDeniedPage("/login")
+                .exceptionHandling().accessDeniedPage("/schedule")
                 .and()
                 .csrf().disable();
     }

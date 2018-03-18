@@ -1,7 +1,6 @@
 package org.saburov.services.conference.config;
 
 import org.saburov.services.conference.entity.ConferenceUser;
-import org.saburov.services.conference.entity.Presentation;
 import org.saburov.services.conference.repository.ConferenceUserRepository;
 import org.saburov.services.conference.repository.PresentationRepository;
 import org.saburov.services.conference.utils.MD5Util;
@@ -13,12 +12,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Component
 public class BasicAuthenticationProvider implements AuthenticationProvider {
@@ -34,13 +31,14 @@ public class BasicAuthenticationProvider implements AuthenticationProvider {
         String username = authentication.getName();
         String password = MD5Util.convertPasswordToHash(String.valueOf(authentication.getCredentials()));
 
-        ConferenceUser user  = userRepository.findByUsername(username);
+        ConferenceUser user = userRepository.findByUsername(username);
 
-        if(user== null || !user.getPassword().equals(password)){
+        if (user == null || !user.getPassword().equals(password)) {
             throw new BadCredentialsException("Неверные логин или пароль");
         }
-        // Кладем данные о новом пользователе, вместе его подключением к БД
-        ConferenceUser principal = new ConferenceUser(username,  password);
+        rolesList.add(user.getRole());
+        rolesList.add("ROLE_" + user.getRole());
+        ConferenceUser principal = new ConferenceUser(username, password);
         List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList(rolesList.toArray(new String[rolesList.size()]));
         return new UsernamePasswordAuthenticationToken(principal, password, authorityList);
     }

@@ -6,3 +6,8 @@
 .mainbutton{
     margin-left: 10px;
 }
+.logoutBtn{
+    margin-left: auto;
+    margin-right: 20px;
+    padding: 0 !important;
+}

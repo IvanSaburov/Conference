@@ -1,26 +1,28 @@
 package org.saburov.services.conference.entity;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.Set;
 
 @Entity
 public class ConferenceUser {
 
+    @JsonIgnore
     private long id;
+    @JsonIgnore
     private String username;
+    @JsonIgnore
     private String password;
+    @JsonIgnore
     private String role;
     private String firstName;
     private String lastName;
     private String email;
     private String city;
     private Integer age;
+    @JsonIgnore
     private Set<Presentation> presentations;
-    @DateTimeFormat(pattern = "dd/MM/YYYY")
-    private Date date;
 
     public ConferenceUser(String username, String password) {
         this.username = username;
@@ -31,7 +33,8 @@ public class ConferenceUser {
     }
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @Column
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public long getId() {
         return id;
     }
@@ -40,16 +43,7 @@ public class ConferenceUser {
         this.id = id;
     }
 
-    @Column(name = "date")
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    @Column(name = "username", unique=true)
+    @Column(name = "username", unique = true)
     public String getUsername() {
         return username;
     }
@@ -122,8 +116,8 @@ public class ConferenceUser {
     }
 
     @ManyToMany(cascade = CascadeType.MERGE)
-    @JoinTable(name = "user_presentation", joinColumns = { @JoinColumn(name = "id") },
-            inverseJoinColumns = { @JoinColumn(name = "presentationid") })
+    @JoinTable(name = "user_presentation", joinColumns = {@JoinColumn(name = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "presentationid")})
     public Set<Presentation> getPresentations() {
         return presentations;
     }
