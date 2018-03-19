@@ -92,6 +92,19 @@ public class ConferenceController {
         return "redirect:/login";
     }
 
+    @RequestMapping(value = "/addPresentation")
+    public String addPresentation() {
+        return "addPresentation";
+    }
+
+    @RequestMapping(value = "/savePresentation")
+    public String savePresentation(Presentation presentation) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        conferenceService.savePresentation(presentation, username);
+        return "redirect:/presentations";
+    }
+
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
     public String deletePresentation(@PathVariable("id") Long presentationId, Model model) {
         conferenceService.deletePresentation(presentationId);

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -53,6 +54,15 @@ public class ConferenceService {
     public Set<Presentation> getPresentations(String username) {
         return userRepository.findByUsername(username).getPresentations();
     }
+
+    public void savePresentation(Presentation presentation, String username){
+        presentation.setConferenceUsers(new HashSet<>());
+        presentationRepository.save(presentation);
+        ConferenceUser user = userRepository.findByUsername(username);
+        user.getPresentations().add(presentation);
+        userRepository.save(user);
+    }
+
 
     public void deletePresentation(Long presentationId) {
         presentationRepository.delete(presentationId);

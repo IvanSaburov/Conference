@@ -22,7 +22,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/registration").permitAll()
-                .antMatchers("/presentations").hasAnyRole(presenter, admin)
+                .antMatchers("/presentations","/addPresentation", "/savePresentation").hasAnyRole(presenter, admin)
                 .antMatchers("/schedule").hasAnyRole(presenter, admin, listener)
                 .antMatchers("/users").hasAnyRole(admin)
                 .antMatchers("/addUser").permitAll()
