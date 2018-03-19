@@ -13,10 +13,7 @@ import org.saburov.services.conference.utils.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class ConferenceService {
@@ -38,6 +35,10 @@ public class ConferenceService {
         userRepository.save(user);
     }
 
+    public Iterable<ConferenceUser> getAllUsers(){
+        return userRepository.findAll();
+    }
+
     public ButtonAccessConfigurator initButtonAccess(String username) {
         ButtonAccessConfigurator configurator = new ButtonAccessConfigurator();
         ConferenceUser currentUser = userRepository.findByUsername(username);
@@ -55,16 +56,57 @@ public class ConferenceService {
         return userRepository.findByUsername(username).getPresentations();
     }
 
+    public Iterable<Presentation> getAllPresentations(String username) {
+        return presentationRepository.findAll();
+    }
+
     public void savePresentation(Presentation presentation, String username){
-        presentation.setConferenceUsers(new HashSet<>());
-        presentationRepository.save(presentation);
+        Presentation newPresentation = new Presentation();
+        if(presentation.getPresentationid() != null){
+            newPresentation = presentationRepository.findByPresentationid(presentation.getPresentationid());
+        }
+        newPresentation.setTittle(presentation.getTittle());
+        newPresentation.setDescription(presentation.getDescription());
+        newPresentation.setConferenceUsers(new HashSet<>());
+        presentationRepository.save(newPresentation);
         ConferenceUser user = userRepository.findByUsername(username);
-        user.getPresentations().add(presentation);
+        if(presentation.getPresentationid() == null){
+            user.getPresentations().add(newPresentation);
+        }
         userRepository.save(user);
     }
 
+    public void addPresentationUser(String username, Presentation presentation){
+        ConferenceUser user = userRepository.findByUsername(username);
+        if (user != null) {
+            if (!user.getPresentations().contains(presentation)) {
+                user.getPresentations().add(presentation);
+            }
+            userRepository.save(user);
+        }
+    }
+    public void deletePresentationUser(String username, Presentation presentation){
+        ConferenceUser user = userRepository.findByUsername(username);
+        if (user != null) {
+            if (user.getPresentations().contains(presentation)) {
+                user.getPresentations().remove(presentation);
+            }
+            userRepository.save(user);
+        }
+        if(presentation.getConferenceUsers().isEmpty()){
+            scheduleRepository.deleteByPresentation(presentation);
+            presentationRepository.delete(presentation);
+        }
+    }
 
     public void deletePresentation(Long presentationId) {
+        Presentation presentation = presentationRepository.findByPresentationid(presentationId);
+        Iterable<ConferenceUser>users = presentation.getConferenceUsers();
+        for(ConferenceUser user: users){
+            user.getPresentations().remove(presentation);
+            userRepository.save(user);
+        }
+        scheduleRepository.deleteByPresentation(presentation);
         presentationRepository.delete(presentationId);
     }
 

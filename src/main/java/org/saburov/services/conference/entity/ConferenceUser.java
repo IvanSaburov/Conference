@@ -1,6 +1,7 @@
 package org.saburov.services.conference.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.saburov.services.conference.utils.MD5Util;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -26,7 +27,7 @@ public class ConferenceUser {
 
     public ConferenceUser(String username, String password) {
         this.username = username;
-        this.password = password;
+        this.password =  MD5Util.convertPasswordToHash(password);
     }
 
     public ConferenceUser() {

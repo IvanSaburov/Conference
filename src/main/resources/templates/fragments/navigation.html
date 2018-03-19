@@ -1,13 +1,17 @@
 <div class="buttons-group">
     <div >
-        <a href="/schedule" class="btn btn-success">Главная страница</a>
+        <a href="/schedule" class="btn btn-success">Расписание</a>
     </div>
     <div class="mainbutton"  th:switch="${usersAccess}">
         <a class="btn btn-success" th:case="true" href="/users">Список пользователей</a>
         <a class="btn btn-success" th:case="*" href="#">Список пользователей</a>
     </div>
     <div class="mainbutton" th:switch="${presentationAccess}">
-        <a class="btn btn-success" th:case="true" href="/presentations">Мои доклады</a>
+        <a class="btn btn-success" th:case="true" href="/mypresentations">Мои доклады</a>
+        <a class="btn btn-success" th:case="*" href="#">Мои доклады</a>
+    </div>
+    <div class="mainbutton" th:switch="${presentationAccess}">
+        <a class="btn btn-success" th:case="true" href="/allpresentations">Все доклады</a>
         <a class="btn btn-success" th:case="*" href="#">Мои доклады</a>
     </div>
     <div class="logoutBtn" style="padding:20px 0">

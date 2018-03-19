@@ -24,95 +24,144 @@ import java.util.Set;
 
 @Controller
 public class ConferenceController {
-    @Autowired
-    ConferenceService conferenceService;
+  @Autowired
+  ConferenceService conferenceService;
 
-    @Autowired
-    ConferenceUserRepository userRepository;
+  @Autowired
+  ConferenceUserRepository userRepository;
 
-    @Autowired
-    PresentationRepository presentationRepository;
+  @Autowired
+  PresentationRepository presentationRepository;
 
-    @Autowired
-    RoomRepository roomRepository;
+  @Autowired
+  RoomRepository roomRepository;
 
-    @Autowired
-    ScheduleRepository scheduleRepository;
+  @Autowired
+  ScheduleRepository scheduleRepository;
 
-    @RequestMapping("/login")
-    public String login() {
-        return "login";
+  @RequestMapping("/login")
+  public String login() {
+    return "login";
+  }
+
+  @RequestMapping("/registration")
+  public String registration() {
+    return "registration";
+  }
+
+  @RequestMapping("/users")
+  public String index(Model model) {
+    List<ConferenceUser> users = (List<ConferenceUser>) conferenceService.getAllUsers();
+    model.addAttribute("users", users);
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String username = auth.getName();
+    setBtnConfigurationToModel(model, username);
+    return "users";
+  }
+
+  @RequestMapping("/schedule")
+  public String getSchedule(Model model) {
+    Iterable<Schedule> schedules = scheduleRepository.findAllByOrderByPresentationRoom();
+    model.addAttribute("schedules", schedules);
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String username = auth.getName();
+    setBtnConfigurationToModel(model, username);
+
+    return "schedule";
+  }
+
+  @RequestMapping("/mypresentations")
+  public String getPresentations(Model model) {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String username = auth.getName();
+    Set<Presentation> presentations = conferenceService.getPresentations(username);
+    model.addAttribute("presentations", presentations);
+    setBtnConfigurationToModel(model, username);
+    return "mypresentations";
+  }
+
+  @RequestMapping("/allpresentations")
+  public String getAllPresentations(Model model) {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String username = auth.getName();
+    Iterable<Presentation> presentations = conferenceService.getAllPresentations(username);
+    model.addAttribute("presentations", presentations);
+    setBtnConfigurationToModel(model, username);
+    return "allpresentations";
+  }
+
+  @RequestMapping(value = "/addpresentationtouser/{id}", method = RequestMethod.GET)
+  public String addPresentationUser(@PathVariable Long id) {
+    Presentation presentation = presentationRepository.findOne(id);
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String username = auth.getName();
+    conferenceService.addPresentationUser(username, presentation);
+    return "redirect:/allpresentations";
+  }
+
+  @RequestMapping(value = "/deletepresentationfromuser/{id}", method = RequestMethod.GET)
+  public String deletePresentationUser(@PathVariable Long id) {
+    Presentation presentation = presentationRepository.findOne(id);
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String username = auth.getName();
+    conferenceService.deletePresentationUser(username, presentation);
+    return "redirect:/allpresentations";
+  }
+
+  @RequestMapping(value = "/editPresentation/{id}", method = RequestMethod.GET)
+  public String editPresentation(@PathVariable Long id, Model model) {
+    Presentation presentation = presentationRepository.findOne(id);
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String username = auth.getName();
+    model.addAttribute("presentation", presentation);
+    setBtnConfigurationToModel(model, username);
+    return "editPresentation";
+  }
+
+  @RequestMapping(value = "/savePresentation/{id}")
+  public String savePresentation(@PathVariable Long id, Presentation presentation) {
+    if(id!=null){
+      presentation.setPresentationid(id);
     }
+   return savePresentation(presentation);
+  }
 
-    @RequestMapping("/registration")
-    public String registration() {
-        return "registration";
-    }
+  @RequestMapping(value = "/savePresentation")
+  public String savePresentation(Presentation presentation) {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String username = auth.getName();
+    conferenceService.savePresentation(presentation, username);
+    return "redirect:/mypresentations";
+  }
 
-    @RequestMapping("/users")
-    public String index(Model model) {
-        List<ConferenceUser> users = (List<ConferenceUser>) userRepository.findAll();
-        Iterable<Schedule> w = scheduleRepository.findAll();
-        model.addAttribute("users", users);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        ButtonAccessConfigurator configurator = conferenceService.initButtonAccess(username);
-        model.addAttribute("usersAccess", configurator.isConferenceUsersListAvailable());
-        model.addAttribute("presentationAccess", configurator.isPresentationListAvailable());
-        return "users";
-    }
+  @RequestMapping(value = "/addUser", method = RequestMethod.POST)
+  public String save(ConferenceUser user) {
+    conferenceService.saveNewUser(user);
+    return "redirect:/login";
+  }
 
-    @RequestMapping("/schedule")
-    public String getSchedule(Model model) {
-        Iterable<Schedule> schedules = scheduleRepository.findAllByOrderByPresentationRoom();
-        model.addAttribute("schedules", schedules);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        ButtonAccessConfigurator configurator = conferenceService.initButtonAccess(username);
-        model.addAttribute("usersAccess", configurator.isConferenceUsersListAvailable());
-        model.addAttribute("presentationAccess", configurator.isPresentationListAvailable());
-        return "schedule";
-    }
+  @RequestMapping(value = "/addPresentation")
+  public String addPresentation(Model model) {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String username = auth.getName();
+    setBtnConfigurationToModel(model, username);
+    return "addPresentation";
+  }
 
-    @RequestMapping("/presentations")
-    public String getPresentations(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        Set<Presentation> presentations = conferenceService.getPresentations(username);
-        model.addAttribute("presentations", presentations);
-        ButtonAccessConfigurator configurator = conferenceService.initButtonAccess(username);
-        model.addAttribute("usersAccess", configurator.isConferenceUsersListAvailable());
-        model.addAttribute("presentationAccess", configurator.isPresentationListAvailable());
-        return "presentations";
-    }
+  @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+  public String deletePresentation(@PathVariable("id") Long presentationId, Model model) {
+    conferenceService.deletePresentation(presentationId);
+    return "redirect:/mypresentations";
+  }
 
-    @RequestMapping(value = "/addUser", method = RequestMethod.POST)
-    public String save(ConferenceUser user) {
-        conferenceService.saveNewUser(user);
-        return "redirect:/login";
-    }
+  @RequestMapping(value = "/apischedule", method = RequestMethod.GET)
+  public ResponseEntity getSchedules() {
+    return ResponseEntity.ok(conferenceService.getSchedulesMap());
+  }
 
-    @RequestMapping(value = "/addPresentation")
-    public String addPresentation() {
-        return "addPresentation";
-    }
-
-    @RequestMapping(value = "/savePresentation")
-    public String savePresentation(Presentation presentation) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        conferenceService.savePresentation(presentation, username);
-        return "redirect:/presentations";
-    }
-
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public String deletePresentation(@PathVariable("id") Long presentationId, Model model) {
-        conferenceService.deletePresentation(presentationId);
-        return "redirect:/presentations";
-    }
-
-    @RequestMapping(value = "/apischedule", method = RequestMethod.GET)
-    public ResponseEntity getSchedules() {
-        return ResponseEntity.ok(conferenceService.getSchedulesMap());
-    }
+  private void setBtnConfigurationToModel(Model model, String username) {
+    ButtonAccessConfigurator configurator = conferenceService.initButtonAccess(username);
+    model.addAttribute("usersAccess", configurator.isConferenceUsersListAvailable());
+    model.addAttribute("presentationAccess", configurator.isPresentationListAvailable());
+  }
 }

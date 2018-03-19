@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Conference</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link type="text/css" rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+  <link type="text/css" rel="stylesheet" th:href="@{css/style.css}" />
+
+</head>
+<body>
+<th:block layout:replace="fragments/navigation"/>
+<div class="col-md-4">
+  <h3 th:inline="text">Список всех презентаций: </h3>
+</div>
+
+<div style="padding:0 20px">
+  <table class="table table-striped">
+    <tr>
+      <th class="col-md-2">Название</th>
+      <th class="col-md-3">Описание</th>
+      <th class="col-md-1">Дата и время</th>
+      <th class="col-md-2">Докладчик</th>
+      <th class="col-md-2">Действия</th>
+    </tr>
+    <tr th:each = "presentation : ${presentations}">
+      <td  th:text="${presentation.tittle}"></td>
+      <td  th:text="${presentation.description}"></td>
+      <!--<td class="col-md-2"th:text="${presentation.description}"></td>-->
+      <td ></td>
+      <td >
+				<span th:each="conferenceUser,iterStat : ${presentation.conferenceUsers}">
+					<span th:text="${conferenceUser.firstName} + ' ' + ${conferenceUser.lastName}"/><th:block th:if="${!iterStat.last}">,</th:block>
+				</span>
+      </td>
+      <td >
+        <a th:href="@{/addpresentationtouser/{id}(id=${presentation.presentationid})}" method="get" enctype="multipart/form-data" class="btn btn-success btn-xs">Участвовать в докладе</a>
+        <a th:href="@{/deletepresentationfromuser/{id}(id=${presentation.presentationid})}" class="btn btn-danger btn-xs">Не участвовать</a>
+      </td>
+    </tr>
+  </table>
+  <a href="/addPresentation" class="btn btn-success">Добавить доклад</a>
+</div>
+</body>
+</html>

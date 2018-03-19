@@ -16,17 +16,17 @@
 <div style="padding:0 20px">
     <table class="table table-striped">
         <tr>
-            <th>Название</th>
-            <th>Описание</th>
-            <th>Дата и время</th>
-            <th>Докладчик</th>
-            <th>Действия</th>
+            <th class="col-md-2">Название</th>
+            <th class="col-md-3">Описание</th>
+            <th class="col-md-1">Дата и время</th>
+            <th class="col-md-2">Докладчик</th>
+            <th class="col-md-2">Действия</th>
         </tr>
         <tr th:each = "presentation : ${presentations}">
             <!--<td th:text="${schedule.presentationTime}"></td>-->
             <td th:text="${presentation.tittle}"></td>
             <td th:text="${presentation.description}"></td>
-            <td th:text="${presentation.description}"></td>
+            <td ></td>
             <td>
 				<span th:each="conferenceUser,iterStat : ${presentation.conferenceUsers}">
 					<span th:text="${conferenceUser.firstName} + ' ' + ${conferenceUser.lastName}"/><th:block th:if="${!iterStat.last}">,</th:block>

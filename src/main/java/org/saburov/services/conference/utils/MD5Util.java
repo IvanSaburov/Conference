@@ -5,7 +5,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class MD5Util {
     public static String convertPasswordToHash(String password) {
-        String generatedPassword = null;
+        String generatedPassword = "";
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(password.getBytes());

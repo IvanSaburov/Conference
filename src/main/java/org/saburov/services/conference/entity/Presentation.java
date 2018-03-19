@@ -11,7 +11,7 @@ public class Presentation {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long presentationid;
+    private Long presentationid;
 
     @Column(name = "tittle")
     private String tittle;
@@ -26,11 +26,11 @@ public class Presentation {
     public Presentation() {
     }
 
-    public long getPresentationid() {
+    public Long getPresentationid() {
         return presentationid;
     }
 
-    public void setPresentationid(long presentationid) {
+    public void setPresentationid(Long presentationid) {
         this.presentationid = presentationid;
     }
 

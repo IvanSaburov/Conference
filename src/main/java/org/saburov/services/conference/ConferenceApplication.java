@@ -41,14 +41,14 @@ public class ConferenceApplication {
     public CommandLineRunner initData(ConferenceUserRepository userRepository, PresentationRepository presentationRepository,
                                       RoomRepository roomRepository, ScheduleRepository scheduleRepository) {
         return (args) -> {
-            ConferenceUser conferenceUser = new ConferenceUser("ivan", MD5Util.convertPasswordToHash("q"));
+            ConferenceUser conferenceUser = new ConferenceUser("ivan","q");
             conferenceUser.setAge(28);
             conferenceUser.setCity("Perm");
             conferenceUser.setEmail("ivan.saburov@mail.ru");
             conferenceUser.setFirstName("Иван");
             conferenceUser.setLastName("Сабуров");
             conferenceUser.setRole(RolesConfig.getAdminRole());
-            ConferenceUser conferenceUser1 = new ConferenceUser("test", MD5Util.convertPasswordToHash("1"));
+            ConferenceUser conferenceUser1 = new ConferenceUser("test", "1");
             conferenceUser1.setAge(31);
             conferenceUser1.setCity("Perm");
             conferenceUser1.setEmail("test@mail.ru");
@@ -72,7 +72,7 @@ public class ConferenceApplication {
             presentation2.setDescription("Описание тестовой презентации");
 
             Presentation presentation3 = new Presentation();
-            presentation3.setTittle("Презентация об итальянском язык");
+            presentation3.setTittle("Презентация об итальянском языке");
             presentation3.setDescription("Ragazzi, andiamo, andiamo. Tutto va bene");
 
 

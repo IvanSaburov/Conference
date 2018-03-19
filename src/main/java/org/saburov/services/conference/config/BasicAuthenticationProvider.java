@@ -29,11 +29,11 @@ public class BasicAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         List<String> rolesList = new ArrayList<>();
         String username = authentication.getName();
-        String password = MD5Util.convertPasswordToHash(String.valueOf(authentication.getCredentials()));
+        String password = String.valueOf(authentication.getCredentials());
 
         ConferenceUser user = userRepository.findByUsername(username);
 
-        if (user == null || !user.getPassword().equals(password)) {
+        if (user == null || !user.getPassword().equals(MD5Util.convertPasswordToHash(password))) {
             throw new BadCredentialsException("Неверные логин или пароль");
         }
         rolesList.add(user.getRole());

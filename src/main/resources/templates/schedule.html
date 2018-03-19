@@ -16,11 +16,11 @@
 <div style="padding:0 20px">
     <table class="table table-striped">
         <tr>
-            <th>Аудитория</th>
-            <th>Дата и время</th>
-            <th>Название</th>
-            <th>Описание</th>
-            <th>Докладчик</th>
+            <th class="col-md-1">Аудитория</th>
+            <th class="col-md-1">Дата и время</th>
+            <th class="col-md-2">Название</th>
+            <th class="col-md-3">Описание</th>
+            <th class="col-md-2">Докладчик</th>
         </tr>
         <tr th:each = "schedule : ${schedules}">
             <td th:text="${schedule.presentationRoom.number}"></td>
